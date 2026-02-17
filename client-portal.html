@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal | Midnight Indigo</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(11, 14, 20, .7);
+            border-bottom: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-primary);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%)
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center
+        }
+
+        .nav-links a {
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--text-secondary);
+            transition: color .3s;
+            position: relative
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary)
+        }
+
+        .nav-links a.active {
+            color: var(--accent-primary)
+        }
+
+        .nav-cta {
+            padding: .6rem 1.5rem !important;
+            font-size: .8rem !important;
+            background: var(--accent-primary) !important;
+            color: #fff !important;
+            border-radius: 50px
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary)
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            padding: 4px 12px;
+            border: 1px solid rgba(99, 102, 241, .3);
+            border-radius: 50px
+        }
+
+        .portal-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - var(--header-height));
+            margin-top: var(--header-height)
+        }
+
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid rgba(255, 255, 255, .05);
+            padding: 2rem 1.5rem
+        }
+
+        .sidebar-nav {
+            margin-top: 2rem
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: .8rem 1rem;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: .9rem;
+            transition: all .3s;
+            margin-bottom: .25rem;
+            cursor: pointer
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(99, 102, 241, .1);
+            color: var(--accent-primary)
+        }
+
+        .portal-main {
+            padding: 2rem;
+            overflow-y: auto
+        }
+
+        .portal-section {
+            display: none
+        }
+
+        .portal-section.active {
+            display: block
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem
+        }
+
+        .status-card {
+            padding: 1.5rem;
+            border-radius: 12px
+        }
+
+        .status-card h4 {
+            font-size: .8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: .5rem
+        }
+
+        .status-value {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: var(--font-heading)
+        }
+
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .milestone-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .milestone-dot.done {
+            background: var(--success)
+        }
+
+        .milestone-dot.active {
+            background: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary)
+        }
+
+        .milestone-dot.pending {
+            background: rgba(255, 255, 255, .15)
+        }
+
+        .milestone-status {
+            margin-left: auto;
+            font-size: .8rem;
+            padding: 3px 10px;
+            border-radius: 20px
+        }
+
+        .milestone-status.done {
+            background: rgba(16, 185, 129, .15);
+            color: var(--success)
+        }
+
+        .milestone-status.active {
+            background: rgba(99, 102, 241, .15);
+            color: var(--accent-primary)
+        }
+
+        .milestone-status.pending {
+            background: rgba(255, 255, 255, .05);
+            color: var(--text-secondary)
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: .8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: .5rem;
+            cursor: pointer;
+            transition: background .3s
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, .03)
+        }
+
+        .file-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, .1);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .file-size {
+            margin-left: auto;
+            font-size: .8rem;
+            color: var(--text-secondary)
+        }
+
+        .file-actions {
+            display: flex;
+            gap: .5rem;
+            margin-left: auto
+        }
+
+        .file-actions button {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            font-size: .75rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all .3s
+        }
+
+        .file-actions button:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary)
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        .invoice-table th {
+            text-align: left;
+            padding: .8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            font-size: .8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase
+        }
+
+        .invoice-table td {
+            padding: .8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .03);
+            font-size: .9rem
+        }
+
+        .badge-paid {
+            color: var(--success)
+        }
+
+        .badge-pending {
+            color: #F59E0B
+        }
+
+        .badge-overdue {
+            color: #EF4444
+        }
+
+        .msg-list {
+            max-height: 500px;
+            overflow-y: auto
+        }
+
+        .msg-item {
+            display: flex;
+            gap: 12px;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            cursor: pointer;
+            transition: background .3s
+        }
+
+        .msg-item:hover {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .msg-item.unread {
+            border-left: 3px solid var(--accent-primary)
+        }
+
+        .msg-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0
+        }
+
+        .msg-preview {
+            font-size: .85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden
+        }
+
+        .msg-time {
+            margin-left: auto;
+            font-size: .75rem;
+            color: var(--text-secondary);
+            white-space: nowrap
+        }
+
+        .msg-compose {
+            margin-top: 1.5rem
+        }
+
+        .msg-compose textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: .9rem;
+            min-height: 100px;
+            resize: vertical
+        }
+
+        .msg-compose textarea:focus {
+            border-color: var(--accent-primary);
+            outline: none
+        }
+
+        .settings-group {
+            margin-bottom: 2rem
+        }
+
+        .settings-group h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .setting-row label {
+            font-size: .9rem
+        }
+
+        .toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            cursor: pointer
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, .15);
+            border-radius: 12px;
+            transition: .3s
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: .3s
+        }
+
+        .toggle input:checked+.toggle-slider {
+            background: var(--accent-primary)
+        }
+
+        .toggle input:checked+.toggle-slider::before {
+            transform: translateX(20px)
+        }
+
+        .form-input {
+            width: 100%;
+            padding: .8rem 1rem;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: .9rem;
+            margin-top: .5rem
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-primary);
+            outline: none
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(255, 255, 255, .1);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color .3s
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent-primary)
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--spacing-lg)
+        }
+
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .footer-logo .logo-icon {
+            width: 24px;
+            height: 24px
+        }
+
+        .footer-links h4 {
+            margin-bottom: var(--spacing-sm);
+            opacity: .4;
+            text-transform: uppercase;
+            font-size: .8rem;
+            letter-spacing: .1em
+        }
+
+        .footer-links ul li {
+            margin-bottom: .6rem
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: .9rem
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary)
+        }
+
+        .footer-bottom {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, .05);
+            display: flex;
+            justify-content: space-between;
+            font-size: .8rem;
+            color: var(--text-secondary)
+        }
+
+        @media(max-width:768px) {
+            .nav-links {
+                display: none
+            }
+
+            .hamburger {
+                display: flex
+            }
+
+            .portal-layout {
+                grid-template-columns: 1fr
+            }
+
+            .sidebar {
+                display: none
+            }
+
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .two-col {
+                grid-template-columns: 1fr
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <nav class="navbar">
+        <a href="index.html" class="logo hover-target">
+            <div class="logo-icon"></div> MIDNIGHT
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="studio.html">Studio</a><a href="minds.html">Minds</a><a href="work.html">Work</a>
+            <a href="services.html">Services</a><a href="insights.html">Insights</a><a href="lab.html">The Lab</a>
+            <a href="client-portal.html" class="active">Portal</a><a href="contact.html" class="nav-cta">Let's Talk</a>
+        </div>
+        <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('active')">
+            <span></span><span></span><span></span></div>
+    </nav>
+    <div class="portal-layout">
+        <aside class="sidebar">
+            <div style="display:flex;align-items:center;gap:10px">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Client"
+                    style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+                <div><strong style="font-size:.9rem">NeoBank Team</strong>
+                    <p style="font-size:.75rem;color:var(--text-secondary)">Pro Plan</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a class="active" data-section="dashboard" onclick="switchSection('dashboard',this)">📊 Dashboard</a>
+                <a data-section="milestones" onclick="switchSection('milestones',this)">📋 Milestones</a>
+                <a data-section="files" onclick="switchSection('files',this)">📁 Files</a>
+                <a data-section="invoices" onclick="switchSection('invoices',this)">💳 Invoices</a>
+                <a data-section="messages" onclick="switchSection('messages',this)">💬 Messages</a>
+                <a data-section="settings" onclick="switchSection('settings',this)">⚙️ Settings</a>
+                <a style="margin-top:2rem;color:var(--accent-primary)" onclick="alert('Support chat opening...')">🎧 Get
+                    Support</a>
+            </nav>
+        </aside>
+        <main class="portal-main">
+
+            <!-- ===== DASHBOARD ===== -->
+            <div class="portal-section active" id="section-dashboard">
+                <div style="margin-bottom:2rem">
+                    <span class="section-label">Dashboard</span>
+                    <h1 style="font-size:2rem">Welcome back, James.</h1>
+                    <p style="color:var(--text-secondary)">NeoBank Prime — Phase 2 in progress.</p>
+                </div>
+                <div class="status-grid">
+                    <div class="glass-card status-card">
+                        <h4>Project</h4>
+                        <div class="status-value" style="color:var(--accent-primary)">Phase 2</div>
+                        <p style="font-size:.8rem;color:var(--text-secondary)">Engineering Sprint</p>
+                    </div>
+                    <div class="glass-card status-card">
+                        <h4>Progress</h4>
+                        <div class="status-value" style="color:var(--success)">68%</div>
+                        <div
+                            style="width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:.5rem">
+                            <div style="width:68%;height:100%;background:var(--success);border-radius:2px"></div>
+                        </div>
+                    </div>
+                    <div class="glass-card status-card">
+                        <h4>Next Milestone</h4>
+                        <div class="status-value" style="font-size:1.3rem">API Integration</div>
+                        <p style="font-size:.8rem;color:var(--text-secondary)">Due Feb 28</p>
+                    </div>
+                    <div class="glass-card status-card">
+                        <h4>Budget Used</h4>
+                        <div class="status-value">$16.5K</div>
+                        <p style="font-size:.8rem;color:var(--text-secondary)">of $25K total</p>
+                    </div>
+                </div>
+                <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem">
+                    <h3 style="margin-bottom:1rem">Recent Activity</h3>
+                    <div class="milestone-item">
+                        <div class="milestone-dot done"></div>
+                        <div><strong>Design files updated</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Elena uploaded App Screens v3.fig — 2
+                                hours ago</p>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot active"></div>
+                        <div><strong>Frontend sprint started</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Marcus began Sprint 4 — Today</p>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot done"></div>
+                        <div><strong>Invoice INV-002 paid</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">$8,500 processed — Yesterday</p>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot done"></div>
+                        <div><strong>Weekly sync completed</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Meeting notes shared — 2 days ago</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="two-col">
+                    <div class="glass-card" style="padding:1.5rem">
+                        <h3 style="margin-bottom:1rem">Quick Files</h3>
+                        <div class="file-item hover-target">
+                            <div class="file-icon">📄</div>
+                            <div><strong style="font-size:.9rem">Brand Guidelines v2.pdf</strong><br><span
+                                    style="font-size:.75rem;color:var(--text-secondary)">2 days ago</span></div><span
+                                class="file-size">4.2 MB</span>
+                        </div>
+                        <div class="file-item hover-target">
+                            <div class="file-icon">🎨</div>
+                            <div><strong style="font-size:.9rem">App Screens.fig</strong><br><span
+                                    style="font-size:.75rem;color:var(--text-secondary)">5 days ago</span></div><span
+                                class="file-size">128 MB</span>
+                        </div>
+                    </div>
+                    <div class="glass-card" style="padding:1.5rem">
+                        <h3 style="margin-bottom:1rem">Upcoming</h3>
+                        <div class="milestone-item">
+                            <div class="milestone-dot active"></div>
+                            <div><strong>API Integration</strong>
+                                <p style="font-size:.8rem;color:var(--text-secondary)">Feb 15–28</p>
+                            </div>
+                        </div>
+                        <div class="milestone-item">
+                            <div class="milestone-dot pending"></div>
+                            <div><strong>QA & Launch</strong>
+                                <p style="font-size:.8rem;color:var(--text-secondary)">Mar 1–10</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== MILESTONES ===== -->
+            <div class="portal-section" id="section-milestones">
+                <div style="margin-bottom:2rem">
+                    <span class="section-label">Milestones</span>
+                    <h1 style="font-size:2rem">Project Timeline</h1>
+                    <p style="color:var(--text-secondary)">Track every phase of NeoBank Prime development.</p>
+                </div>
+                <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+                        <h3>Overall Progress</h3>
+                        <span style="color:var(--accent-primary);font-weight:700;font-size:1.2rem">68%</span>
+                    </div>
+                    <div
+                        style="width:100%;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin-bottom:2rem">
+                        <div
+                            style="width:68%;height:100%;background:linear-gradient(90deg,var(--success),var(--accent-primary));border-radius:4px;transition:width 1s">
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot done"></div>
+                        <div style="flex:1"><strong>Discovery & Strategy</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Jan 6–12 · 5 deliverables</p>
+                        </div>
+                        <span class="milestone-status done">Complete</span>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot done"></div>
+                        <div style="flex:1"><strong>UI/UX Design</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Jan 13–27 · 12 screens designed</p>
+                        </div>
+                        <span class="milestone-status done">Complete</span>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot active"></div>
+                        <div style="flex:1"><strong>Frontend Development</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Jan 28–Feb 14 · Sprint 4 of 6</p>
+                        </div>
+                        <span class="milestone-status active">In Progress</span>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot pending"></div>
+                        <div style="flex:1"><strong>API Integration</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Feb 15–28 · 8 endpoints</p>
+                        </div>
+                        <span class="milestone-status pending">Upcoming</span>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-dot pending"></div>
+                        <div style="flex:1"><strong>Testing & QA</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Mar 1–7 · Unit + E2E</p>
+                        </div>
+                        <span class="milestone-status pending">Upcoming</span>
+                    </div>
+                    <div class="milestone-item" style="border:none">
+                        <div class="milestone-dot pending"></div>
+                        <div style="flex:1"><strong>Launch & Handoff</strong>
+                            <p style="font-size:.8rem;color:var(--text-secondary)">Mar 8–10 · Deploy + docs</p>
+                        </div>
+                        <span class="milestone-status pending">Upcoming</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== FILES ===== -->
+            <div class="portal-section" id="section-files">
+                <div style="margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <span class="section-label">Files</span>
+                        <h1 style="font-size:2rem">Project Files</h1>
+                    </div>
+                    <button class="btn btn-primary hover-target" style="font-size:.85rem"
+                        onclick="document.getElementById('uploadModal').style.display='flex'">+ Upload File</button>
+                </div>
+                <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem">
+                    <h3 style="margin-bottom:1rem">📁 Design Assets</h3>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">🎨</div>
+                        <div><strong style="font-size:.9rem">App Screens v3.fig</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Updated by Elena · 2 hours
+                                ago</span></div>
+                        <div class="file-actions"><button>Preview</button><button>Download</button></div>
+                    </div>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">🎨</div>
+                        <div><strong style="font-size:.9rem">Design System.fig</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Updated by Elena · 1 week
+                                ago</span></div>
+                        <div class="file-actions"><button>Preview</button><button>Download</button></div>
+                    </div>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">🖼️</div>
+                        <div><strong style="font-size:.9rem">Logo Assets.zip</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Uploaded · Jan 10</span></div>
+                        <div class="file-actions"><button>Download</button></div>
+                    </div>
+                </div>
+                <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem">
+                    <h3 style="margin-bottom:1rem">📄 Documents</h3>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">📄</div>
+                        <div><strong style="font-size:.9rem">Brand Guidelines v2.pdf</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Updated · 2 days ago</span></div>
+                        <div class="file-actions"><button>Preview</button><button>Download</button></div>
+                    </div>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">📄</div>
+                        <div><strong style="font-size:.9rem">Project Brief.pdf</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Uploaded · Jan 6</span></div>
+                        <div class="file-actions"><button>Preview</button><button>Download</button></div>
+                    </div>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">📊</div>
+                        <div><strong style="font-size:.9rem">Analytics Report.xlsx</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Updated · 1 week ago</span></div>
+                        <div class="file-actions"><button>Preview</button><button>Download</button></div>
+                    </div>
+                </div>
+                <div class="glass-card" style="padding:1.5rem">
+                    <h3 style="margin-bottom:1rem">💻 Development</h3>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">⚙️</div>
+                        <div><strong style="font-size:.9rem">API Documentation.md</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Updated by Marcus · 3 days
+                                ago</span></div>
+                        <div class="file-actions"><button>View</button><button>Download</button></div>
+                    </div>
+                    <div class="file-item hover-target">
+                        <div class="file-icon">🗄️</div>
+                        <div><strong style="font-size:.9rem">Database Schema.sql</strong><br><span
+                                style="font-size:.75rem;color:var(--text-secondary)">Updated by Marcus · 5 days
+                                ago</span></div>
+                        <div class="file-actions"><button>View</button><button>Download</button></div>
+                    </div>
+                </div>
+                <!-- Upload Modal -->
+                <div id="uploadModal"
+                    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center"
+                    onclick="if(event.target===this)this.style.display='none'">
+                    <div class="glass-card" style="padding:2rem;max-width:500px;width:90%">
+                        <h3 style="margin-bottom:1rem">Upload File</h3>
+                        <div class="upload-zone" onclick="alert('File picker would open...')">
+                            <p style="font-size:2rem;margin-bottom:1rem">📎</p>
+                            <p>Click or drag files here to upload</p>
+                            <p style="font-size:.8rem;color:var(--text-secondary);margin-top:.5rem">Max file size: 500MB
+                            </p>
+                        </div>
+                        <div style="display:flex;gap:1rem;margin-top:1.5rem;justify-content:flex-end">
+                            <button class="btn btn-secondary"
+                                onclick="document.getElementById('uploadModal').style.display='none'">Cancel</button>
+                            <button class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== INVOICES ===== -->
+            <div class="portal-section" id="section-invoices">
+                <div style="margin-bottom:2rem">
+                    <span class="section-label">Billing</span>
+                    <h1 style="font-size:2rem">Invoices</h1>
+                    <p style="color:var(--text-secondary)">Payment history and outstanding invoices.</p>
+                </div>
+                <div class="status-grid" style="grid-template-columns:repeat(3,1fr)">
+                    <div class="glass-card status-card">
+                        <h4>Total Billed</h4>
+                        <div class="status-value">$25,000</div>
+                    </div>
+                    <div class="glass-card status-card">
+                        <h4>Paid</h4>
+                        <div class="status-value" style="color:var(--success)">$16,500</div>
+                    </div>
+                    <div class="glass-card status-card">
+                        <h4>Outstanding</h4>
+                        <div class="status-value" style="color:#F59E0B">$8,500</div>
+                    </div>
+                </div>
+                <div class="glass-card" style="padding:1.5rem">
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>INV-001</td>
+                                <td>Jan 12</td>
+                                <td>Discovery & Strategy</td>
+                                <td>$8,000</td>
+                                <td class="badge-paid">✓ Paid</td>
+                                <td><button
+                                        style="padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.1);font-size:.75rem;cursor:pointer;color:var(--text-secondary)">Download</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>INV-002</td>
+                                <td>Jan 28</td>
+                                <td>UI/UX Design</td>
+                                <td>$8,500</td>
+                                <td class="badge-paid">✓ Paid</td>
+                                <td><button
+                                        style="padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.1);font-size:.75rem;cursor:pointer;color:var(--text-secondary)">Download</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>INV-003</td>
+                                <td>Feb 14</td>
+                                <td>Frontend Development</td>
+                                <td>$8,500</td>
+                                <td class="badge-pending">⏳ Pending</td>
+                                <td><button
+                                        style="padding:4px 10px;border-radius:6px;border:1px solid var(--accent-primary);font-size:.75rem;cursor:pointer;color:var(--accent-primary)">Pay
+                                        Now</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== MESSAGES ===== -->
+            <div class="portal-section" id="section-messages">
+                <div style="margin-bottom:2rem">
+                    <span class="section-label">Messages</span>
+                    <h1 style="font-size:2rem">Team Chat</h1>
+                    <p style="color:var(--text-secondary)">Direct communication with the Midnight team.</p>
+                </div>
+                <div class="glass-card" style="padding:1.5rem">
+                    <div class="msg-list">
+                        <div class="msg-item unread">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&q=80"
+                                alt="Elena" class="msg-avatar">
+                            <div style="flex:1"><strong style="font-size:.9rem">Elena Vasquez</strong><span
+                                    style="font-size:.75rem;color:var(--accent-primary);margin-left:8px">Design</span>
+                                <p class="msg-preview">Hey James! The new screens are ready for review. I've updated the
+                                    Figma file with all the changes we discussed.</p>
+                            </div>
+                            <span class="msg-time">2h ago</span>
+                        </div>
+                        <div class="msg-item unread">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+                                alt="Marcus" class="msg-avatar">
+                            <div style="flex:1"><strong style="font-size:.9rem">Marcus Chen</strong><span
+                                    style="font-size:.75rem;color:var(--accent-secondary);margin-left:8px">Engineering</span>
+                                <p class="msg-preview">Sprint 4 is looking good — auth flow is complete. Starting on the
+                                    dashboard components next.</p>
+                            </div>
+                            <span class="msg-time">5h ago</span>
+                        </div>
+                        <div class="msg-item">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"
+                                alt="Sarah" class="msg-avatar">
+                            <div style="flex:1"><strong style="font-size:.9rem">Sarah Kim</strong><span
+                                    style="font-size:.75rem;color:var(--success);margin-left:8px">Growth</span>
+                                <p class="msg-preview">Weekly analytics report is attached. Organic traffic up 23% since
+                                    the landing page launch!</p>
+                            </div>
+                            <span class="msg-time">Yesterday</span>
+                        </div>
+                        <div class="msg-item">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&q=80"
+                                alt="Elena" class="msg-avatar">
+                            <div style="flex:1"><strong style="font-size:.9rem">Elena Vasquez</strong><span
+                                    style="font-size:.75rem;color:var(--accent-primary);margin-left:8px">Design</span>
+                                <p class="msg-preview">Meeting notes from the weekly sync have been shared. See
+                                    attachment for action items.</p>
+                            </div>
+                            <span class="msg-time">2 days ago</span>
+                        </div>
+                        <div class="msg-item">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+                                alt="Marcus" class="msg-avatar">
+                            <div style="flex:1"><strong style="font-size:.9rem">Marcus Chen</strong><span
+                                    style="font-size:.75rem;color:var(--accent-secondary);margin-left:8px">Engineering</span>
+                                <p class="msg-preview">API documentation has been updated. Let me know if you have any
+                                    questions about the endpoints.</p>
+                            </div>
+                            <span class="msg-time">3 days ago</span>
+                        </div>
+                    </div>
+                    <div class="msg-compose">
+                        <textarea placeholder="Type a message to the Midnight team..."></textarea>
+                        <div style="display:flex;justify-content:flex-end;margin-top:.75rem;gap:.5rem">
+                            <button class="btn btn-secondary hover-target" style="font-size:.85rem">📎 Attach</button>
+                            <button class="btn btn-primary hover-target" style="font-size:.85rem">Send Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SETTINGS ===== -->
+            <div class="portal-section" id="section-settings">
+                <div style="margin-bottom:2rem">
+                    <span class="section-label">Settings</span>
+                    <h1 style="font-size:2rem">Account Settings</h1>
+                    <p style="color:var(--text-secondary)">Manage your portal preferences and profile.</p>
+                </div>
+                <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem">
+                    <div class="settings-group">
+                        <h3>👤 Profile</h3>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem">
+                            <div><label style="font-size:.85rem;color:var(--text-secondary)">Full Name</label><input
+                                    type="text" class="form-input" value="James Reynolds"></div>
+                            <div><label style="font-size:.85rem;color:var(--text-secondary)">Email</label><input
+                                    type="email" class="form-input" value="james@neobank.io"></div>
+                            <div><label style="font-size:.85rem;color:var(--text-secondary)">Company</label><input
+                                    type="text" class="form-input" value="NeoBank Inc."></div>
+                            <div><label style="font-size:.85rem;color:var(--text-secondary)">Role</label><input
+                                    type="text" class="form-input" value="CEO & Co-founder"></div>
+                        </div>
+                        <button class="btn btn-primary hover-target" style="margin-top:1.5rem;font-size:.85rem">Save
+                            Changes</button>
+                    </div>
+                </div>
+                <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem">
+                    <div class="settings-group" style="margin-bottom:0">
+                        <h3>🔔 Notifications</h3>
+                        <div class="setting-row"><label>Email notifications for milestones</label><label
+                                class="toggle"><input type="checkbox" checked><span
+                                    class="toggle-slider"></span></label></div>
+                        <div class="setting-row"><label>Email notifications for messages</label><label
+                                class="toggle"><input type="checkbox" checked><span
+                                    class="toggle-slider"></span></label></div>
+                        <div class="setting-row"><label>Email notifications for invoices</label><label
+                                class="toggle"><input type="checkbox" checked><span
+                                    class="toggle-slider"></span></label></div>
+                        <div class="setting-row"><label>Weekly progress digest</label><label class="toggle"><input
+                                    type="checkbox"><span class="toggle-slider"></span></label></div>
+                        <div class="setting-row" style="border:none"><label>SMS alerts for urgent updates</label><label
+                                class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                    </div>
+                </div>
+                <div class="glass-card" style="padding:1.5rem">
+                    <div class="settings-group" style="margin-bottom:0">
+                        <h3>🔒 Security</h3>
+                        <div class="setting-row"><label>Two-factor authentication</label><label class="toggle"><input
+                                    type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                        <div class="setting-row" style="border:none"><label>Change password</label><button
+                                class="btn btn-secondary hover-target" style="font-size:.8rem">Update</button></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <div class="logo-icon"></div> MIDNIGHT
+                    </div>
+                    <p style="font-size:.9rem">Three minds forging the digital avant-garde.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Studio</h4>
+                    <ul>
+                        <li><a href="studio.html">Our Story</a></li>
+                        <li><a href="minds.html">The Minds</a></li>
+                        <li><a href="work.html">Work</a></li>
+                        <li><a href="insights.html">Insights</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html">Design</a></li>
+                        <li><a href="services.html">Engineering</a></li>
+                        <li><a href="services.html">Growth</a></li>
+                        <li><a href="lab.html">The Lab</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Twitter / X</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Dribbble</a></li>
+                        <li><a href="mailto:hello@midnight.studio">Email Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom"><span>© 2026 Midnight Indigo.</span><span>Crafted with obsession.</span></div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script>
+        function switchSection(id, el) {
+            document.querySelectorAll('.portal-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + id).classList.add('active');
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+:root {
+    /* Core Palette */
+    --bg-primary: #0B0E14;
+    --bg-secondary: #151921;
+    --accent-primary: #6366F1;
+    --accent-secondary: #A5B4FC;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --success: #10B981;
+
+    /* Gradients */
+    --gradient-glow: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, rgba(11, 14, 20, 0) 70%);
+    --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+
+    /* Typography */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+    --spacing-xl: 8rem;
+
+    /* Layout */
+    --container-width: 1440px;
+    --header-height: 80px;
+
+    /* Animation */
+    --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-smooth: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Effects */
+    --glass-blur: blur(12px);
+    --border-glass: 1px solid rgba(255, 255, 255, 0.05);
+    --glow-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}

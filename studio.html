@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Studio | Midnight Indigo</title>
+    <meta name="description" content="Our origin story — how three minds became one studio.">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        /* ===== NAVBAR (shared pattern) ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(11, 14, 20, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-primary);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 0.6rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            background: var(--accent-primary) !important;
+            color: #fff !important;
+            border-radius: 50px;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        /* Page-specific */
+        .page-hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: var(--spacing-lg);
+            margin-top: var(--header-height);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .page-hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.25;
+        }
+
+        .page-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-primary), transparent);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+        }
+
+        .timeline-item {
+            padding: 20px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: var(--bg-primary);
+            border: 2px solid var(--accent-primary);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: var(--glow-shadow);
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            left: 50%;
+        }
+
+        .left::after {
+            right: -8px;
+        }
+
+        .right::after {
+            left: -8px;
+        }
+
+        .timeline-year {
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .manifesto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .value-number {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            opacity: 0.1;
+            margin-bottom: -1rem;
+        }
+
+        .culture-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .culture-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.4s;
+        }
+
+        .culture-img:hover {
+            transform: scale(1.03);
+        }
+
+        .newsletter-section {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 2rem auto 0;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            padding: 4px 12px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo .logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.4;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .footer-bottom {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                inset: 0;
+                background: var(--bg-primary);
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .timeline::after {
+                left: 20px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 50px;
+            }
+
+            .left::after,
+            .right::after {
+                left: 12px;
+            }
+
+            .right {
+                left: 0;
+            }
+
+            .culture-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="logo hover-target">
+            <div class="logo-icon"></div> MIDNIGHT
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="studio.html" class="active hover-target">Studio</a>
+            <a href="minds.html" class="hover-target">Minds</a>
+            <a href="work.html" class="hover-target">Work</a>
+            <a href="services.html" class="hover-target">Services</a>
+            <a href="insights.html" class="hover-target">Insights</a>
+            <a href="lab.html" class="hover-target">The Lab</a>
+            <a href="client-portal.html" class="hover-target">Portal</a>
+            <a href="contact.html" class="nav-cta hover-target">Let's Talk</a>
+        </div>
+        <div class="hamburger hover-target" onclick="document.getElementById('navLinks').classList.toggle('active')">
+            <span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- ===== PAGE HERO ===== -->
+    <header class="page-hero">
+        <div class="page-hero-bg">
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=80" alt="Studio workspace">
+        </div>
+        <div class="container page-hero-content">
+            <span class="section-label reveal">Our Story</span>
+            <h1 class="reveal" style="font-size: clamp(3rem, 6vw, 5rem); margin-bottom: var(--spacing-sm);">Built
+                From<br><span class="text-gradient">Obsession.</span></h1>
+            <p class="reveal" style="max-width: 600px; font-size: 1.2rem;">Born from a collision of three disciplines.
+                Fueled by coffee, code, and chaotic creativity. We don't build websites — we build digital legacies.</p>
+        </div>
+    </header>
+
+    <!-- ===== MANIFESTO ===== -->
+    <section class="container" style="padding: var(--spacing-xl) 0;">
+        <div class="reveal" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <span class="section-label">Manifesto</span>
+            <h2 class="section-title">We Believe In Making<br>Everything Better Than It Needs To Be.</h2>
+            <p style="font-size: 1.1rem; line-height: 2;">In a world of templates and shortcuts, we choose craft. Every
+                pixel is placed with intent. Every line of code is written with pride. We don't ship work that's "good
+                enough" — we ship work that makes people stop scrolling.</p>
+        </div>
+    </section>
+
+    <!-- ===== TIMELINE ===== -->
+    <section class="container" style="padding: var(--spacing-lg) 0;">
+        <div style="text-align: center; margin-bottom: 3rem;" class="reveal">
+            <span class="section-label">Timeline</span>
+            <h2 class="section-title">How We Got Here</h2>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item left">
+                <div class="glass-card hover-target reveal">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80" alt="Hackathon"
+                        class="timeline-img">
+                    <div class="timeline-year">2020 — The Spark</div>
+                    <h3>A Hackathon in Tokyo</h3>
+                    <p>Three strangers meet at a 48-hour hackathon. We built a neural network that wrote haikus. We won
+                        nothing — except a lifelong partnership.</p>
+                </div>
+            </div>
+            <div class="timeline-item right">
+                <div class="glass-card hover-target reveal">
+                    <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80" alt="First client"
+                        class="timeline-img">
+                    <div class="timeline-year">2021 — The First Client</div>
+                    <h3>A Fintech That Needed Soul</h3>
+                    <p>NeoBank was just a spreadsheet with ambition. We turned it into a digital banking experience that
+                        won App of the Year.</p>
+                </div>
+            </div>
+            <div class="timeline-item left">
+                <div class="glass-card hover-target reveal">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80"
+                        alt="Studio founding" class="timeline-img">
+                    <div class="timeline-year">2022 — The Growth</div>
+                    <h3>From Side Hustle to Studio</h3>
+                    <p>50 projects. 30 industries. Zero managers. We proved that a small, obsessed team outperforms
+                        large agencies.</p>
+                </div>
+            </div>
+            <div class="timeline-item right">
+                <div class="glass-card hover-target reveal">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80"
+                        alt="Midnight Indigo" class="timeline-img">
+                    <div class="timeline-year">2023 — Midnight Indigo</div>
+                    <h3>The Studio Is Born</h3>
+                    <p>We formalized the collective. Named it after the color of our late-night Slack messages. No
+                        managers, just makers. No hierarchy, just craft.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CORE VALUES ===== -->
+    <section class="container" style="padding: var(--spacing-xl) 0;">
+        <div style="text-align: center; margin-bottom: 3rem;" class="reveal">
+            <span class="section-label">Principles</span>
+            <h2 class="section-title">What Drives Us</h2>
+        </div>
+        <div class="manifesto-grid">
+            <div class="glass-card reveal hover-target" style="padding: 2rem;">
+                <div class="value-number">01</div>
+                <h3 style="color: var(--accent-primary); margin-bottom: 0.5rem;">Precision</h3>
+                <p>Pixel-perfect isn't a goal; it's the baseline. We measure twice, cut once, then measure again.</p>
+            </div>
+            <div class="glass-card reveal hover-target" style="padding: 2rem;">
+                <div class="value-number">02</div>
+                <h3 style="color: var(--accent-secondary); margin-bottom: 0.5rem;">Velocity</h3>
+                <p>Speed is a feature. We ship fast without breaking things. Most of the time.</p>
+            </div>
+            <div class="glass-card reveal hover-target" style="padding: 2rem;">
+                <div class="value-number">03</div>
+                <h3 style="color: var(--success); margin-bottom: 0.5rem;">Ownership</h3>
+                <p>We don't hand off projects. We own outcomes until they generate ROI.</p>
+            </div>
+            <div class="glass-card reveal hover-target" style="padding: 2rem;">
+                <div class="value-number">04</div>
+                <h3 style="color: var(--accent-primary); margin-bottom: 0.5rem;">Craft</h3>
+                <p>Details are not details. They make the product. Every animation, every spacing, every word matters.
+                </p>
+            </div>
+            <div class="glass-card reveal hover-target" style="padding: 2rem;">
+                <div class="value-number">05</div>
+                <h3 style="color: var(--accent-secondary); margin-bottom: 0.5rem;">Systems Thinking</h3>
+                <p>We don't build pages. We build ecosystems. Every component connects to a larger strategy.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BEHIND THE SCENES ===== -->
+    <section class="container" style="padding: var(--spacing-xl) 0;">
+        <div style="text-align: center; margin-bottom: 3rem;" class="reveal">
+            <span class="section-label">Culture</span>
+            <h2 class="section-title">Behind the Scenes</h2>
+            <p>Where the magic (and the mess) happens.</p>
+        </div>
+        <div class="culture-grid reveal">
+            <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80" alt="Team meeting"
+                class="culture-img hover-target">
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80" alt="Coding session"
+                class="culture-img hover-target">
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80" alt="Workshop"
+                class="culture-img hover-target">
+        </div>
+    </section>
+
+    <!-- ===== NEWSLETTER ===== -->
+    <section class="newsletter-section container">
+        <div class="glass-card reveal" style="padding: 4rem;">
+            <span class="section-label">Stay Connected</span>
+            <h2 class="section-title" style="margin-top: 1rem;">Get Insights From The Edge</h2>
+            <p>Bi-weekly dispatch on design, engineering, and building digital products that matter.</p>
+            <div class="newsletter-form">
+                <input type="email" placeholder="your@email.com">
+                <button class="btn btn-primary hover-target">Subscribe</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="reveal">
+                    <div class="footer-logo">
+                        <div class="logo-icon"></div> MIDNIGHT
+                    </div>
+                    <p style="font-size: 0.9rem;">Three minds forging the digital avant-garde.</p>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Studio</h4>
+                    <ul>
+                        <li><a href="studio.html" class="hover-target">Our Story</a></li>
+                        <li><a href="minds.html" class="hover-target">The Minds</a></li>
+                        <li><a href="work.html" class="hover-target">Work</a></li>
+                        <li><a href="insights.html" class="hover-target">Insights</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html" class="hover-target">Design</a></li>
+                        <li><a href="services.html" class="hover-target">Engineering</a></li>
+                        <li><a href="services.html" class="hover-target">Growth</a></li>
+                        <li><a href="lab.html" class="hover-target">The Lab</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#" class="hover-target">Twitter / X</a></li>
+                        <li><a href="#" class="hover-target">LinkedIn</a></li>
+                        <li><a href="#" class="hover-target">Dribbble</a></li>
+                        <li><a href="mailto:hello@midnight.studio" class="hover-target">Email Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 Midnight Indigo. All rights reserved.</span>
+                <span>Crafted with obsession.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

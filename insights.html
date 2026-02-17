@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights | Midnight Indigo</title>
+    <meta name="description" content="Thoughts on design, engineering, and building digital products.">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(11, 14, 20, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-primary);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 0.6rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            background: var(--accent-primary) !important;
+            color: #fff !important;
+            border-radius: 50px;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            padding: 4px 12px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .featured-article {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            align-items: center;
+        }
+
+        .featured-article img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+
+        .blog-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+            border-color: var(--accent-primary);
+        }
+
+        .search-input {
+            padding: 0.5rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.85rem;
+            margin-left: auto;
+            width: 250px;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .blog-card {
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            display: block;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .blog-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .blog-card-body {
+            padding: 1.5rem;
+        }
+
+        .blog-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--accent-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-meta img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo .logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.4;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .footer-bottom {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .featured-article {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-input {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo hover-target">
+            <div class="logo-icon"></div> MIDNIGHT
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="studio.html" class="hover-target">Studio</a>
+            <a href="minds.html" class="hover-target">Minds</a>
+            <a href="work.html" class="hover-target">Work</a>
+            <a href="services.html" class="hover-target">Services</a>
+            <a href="insights.html" class="active hover-target">Insights</a>
+            <a href="lab.html" class="hover-target">The Lab</a>
+            <a href="client-portal.html" class="hover-target">Portal</a>
+            <a href="contact.html" class="nav-cta hover-target">Let's Talk</a>
+        </div>
+        <div class="hamburger hover-target" onclick="document.getElementById('navLinks').classList.toggle('active')">
+            <span></span><span></span><span></span></div>
+    </nav>
+
+    <header class="container" style="padding-top: calc(var(--header-height) + var(--spacing-xl)); text-align: center;">
+        <span class="section-label reveal">Blog</span>
+        <h1 class="section-title reveal">Insights From<br><span class="text-gradient">The Edge</span></h1>
+        <p class="reveal" style="max-width: 600px; margin: 0 auto;">Thoughts on design, code, growth, and building
+            digital products that matter.</p>
+    </header>
+
+    <!-- FEATURED -->
+    <section class="container">
+        <div class="featured-article glass-card reveal" style="overflow: hidden; border-radius: 20px;">
+            <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80"
+                alt="Design Systems Article">
+            <div style="padding: 3rem;">
+                <span class="blog-tag">Design</span>
+                <span style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.5rem;">Featured</span>
+                <h2 style="font-size: 2rem; margin: 1rem 0;">Why Your Design System Is Probably Broken (And How to Fix
+                    It)</h2>
+                <p>Most design systems fail because they're built for designers, not for products. Here's how we
+                    approach design system architecture at Midnight Indigo — and why the engineering perspective changes
+                    everything.</p>
+                <div class="blog-meta" style="margin-top: 1.5rem;">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&q=80" alt="Elena">
+                    <span>Elena Vasquez · 8 min read</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FILTERS & GRID -->
+    <section class="container" style="padding: var(--spacing-lg) 0;">
+        <div class="blog-filter reveal">
+            <button class="filter-btn active hover-target">All</button>
+            <button class="filter-btn hover-target">Tech</button>
+            <button class="filter-btn hover-target">Design</button>
+            <button class="filter-btn hover-target">Business</button>
+            <input type="text" class="search-input" placeholder="Search articles...">
+        </div>
+        <div class="blog-grid">
+            <a href="#" class="glass-card blog-card hover-target reveal">
+                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80" alt="Performance">
+                <div class="blog-card-body">
+                    <span class="blog-tag">Tech</span>
+                    <h3>How We Achieved Sub-100ms Load Times</h3>
+                    <p style="font-size: 0.85rem;">The performance tricks that made our client's app the fastest in its
+                        category.</p>
+                    <div class="blog-meta">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Marcus">
+                        <span>Marcus · 5 min</span>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="glass-card blog-card hover-target reveal">
+                <img src="https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=600&q=80" alt="Color Theory">
+                <div class="blog-card-body">
+                    <span class="blog-tag">Design</span>
+                    <h3>Dark Mode Isn't Just Aesthetic — It's Strategic</h3>
+                    <p style="font-size: 0.85rem;">Why dark-first design isn't a trend, it's a business advantage.</p>
+                    <div class="blog-meta">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&q=80" alt="Elena">
+                        <span>Elena · 6 min</span>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="glass-card blog-card hover-target reveal">
+                <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=80" alt="Growth">
+                <div class="blog-card-body">
+                    <span class="blog-tag">Business</span>
+                    <h3>The One Metric That Actually Matters</h3>
+                    <p style="font-size: 0.85rem;">Forget vanity metrics. Here's the number every founder should track.
+                    </p>
+                    <div class="blog-meta">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Sarah">
+                        <span>Sarah · 4 min</span>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="glass-card blog-card hover-target reveal">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80" alt="AI">
+                <div class="blog-card-body">
+                    <span class="blog-tag">Tech</span>
+                    <h3>Building AI-Native Interfaces</h3>
+                    <p style="font-size: 0.85rem;">How to design UIs that work with generative models, not against them.
+                    </p>
+                    <div class="blog-meta">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Marcus">
+                        <span>Marcus · 7 min</span>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="glass-card blog-card hover-target reveal">
+                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80" alt="Agency model">
+                <div class="blog-card-body">
+                    <span class="blog-tag">Business</span>
+                    <h3>Why We Said No to Equity</h3>
+                    <p style="font-size: 0.85rem;">The case against equity-for-services and how cash relationships build
+                        better products.</p>
+                    <div class="blog-meta">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Sarah">
+                        <span>Sarah · 5 min</span>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="glass-card blog-card hover-target reveal">
+                <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600&q=80" alt="Design Process">
+                <div class="blog-card-body">
+                    <span class="blog-tag">Design</span>
+                    <h3>The 47-Iteration Card Component</h3>
+                    <p style="font-size: 0.85rem;">What happened when we refused to stop perfecting a single UI element.
+                    </p>
+                    <div class="blog-meta">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&q=80" alt="Elena">
+                        <span>Elena · 6 min</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="reveal">
+                    <div class="footer-logo">
+                        <div class="logo-icon"></div> MIDNIGHT
+                    </div>
+                    <p style="font-size: 0.9rem;">Three minds forging the digital avant-garde.</p>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Studio</h4>
+                    <ul>
+                        <li><a href="studio.html">Our Story</a></li>
+                        <li><a href="minds.html">The Minds</a></li>
+                        <li><a href="work.html">Work</a></li>
+                        <li><a href="insights.html">Insights</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html">Design</a></li>
+                        <li><a href="services.html">Engineering</a></li>
+                        <li><a href="services.html">Growth</a></li>
+                        <li><a href="lab.html">The Lab</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Twitter / X</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Dribbble</a></li>
+                        <li><a href="mailto:hello@midnight.studio">Email Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom"><span>© 2026 Midnight Indigo.</span><span>Crafted with obsession.</span></div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

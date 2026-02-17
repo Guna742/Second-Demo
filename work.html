@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work | Midnight Indigo</title>
+    <meta name="description" content="Selected works from Midnight Indigo studio.">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(11, 14, 20, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-primary);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 0.6rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            background: var(--accent-primary) !important;
+            color: #fff !important;
+            border-radius: 50px;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            padding: 4px 12px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--accent-primary);
+            color: #fff;
+            border-color: var(--accent-primary);
+        }
+
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .work-card {
+            height: 450px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            border: var(--border-glass);
+            display: block;
+        }
+
+        .work-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .work-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .work-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(11, 14, 20, 0.95) 0%, transparent 100%);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s;
+        }
+
+        .work-card:hover .work-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .work-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--accent-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .work-lead {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo .logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.4;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .footer-bottom {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                inset: 0;
+                background: var(--bg-primary);
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .work-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo hover-target">
+            <div class="logo-icon"></div> MIDNIGHT
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="studio.html" class="hover-target">Studio</a>
+            <a href="minds.html" class="hover-target">Minds</a>
+            <a href="work.html" class="active hover-target">Work</a>
+            <a href="services.html" class="hover-target">Services</a>
+            <a href="insights.html" class="hover-target">Insights</a>
+            <a href="lab.html" class="hover-target">The Lab</a>
+            <a href="client-portal.html" class="hover-target">Portal</a>
+            <a href="contact.html" class="nav-cta hover-target">Let's Talk</a>
+        </div>
+        <div class="hamburger hover-target" onclick="document.getElementById('navLinks').classList.toggle('active')">
+            <span></span><span></span><span></span></div>
+    </nav>
+
+    <header class="container"
+        style="padding-top: calc(var(--header-height) + var(--spacing-xl)); padding-bottom: var(--spacing-lg);">
+        <span class="section-label reveal">Portfolio</span>
+        <h1 class="section-title reveal">Selected Works</h1>
+        <p class="reveal" style="max-width: 600px; margin-bottom: 2rem;">Every project is a case study in obsession.
+            Filter by industry, lead, or service.</p>
+        <div class="filter-bar reveal">
+            <button class="filter-btn active hover-target" data-filter="all">All</button>
+            <button class="filter-btn hover-target" data-filter="fintech">Fintech</button>
+            <button class="filter-btn hover-target" data-filter="ecommerce">E-Commerce</button>
+            <button class="filter-btn hover-target" data-filter="ai">AI / ML</button>
+            <button class="filter-btn hover-target" data-filter="saas">SaaS</button>
+            <button class="filter-btn hover-target" data-filter="healthcare">Health</button>
+        </div>
+    </header>
+
+    <section class="container work-grid">
+        <a href="case-study.html" class="work-card hover-target reveal" data-category="fintech">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="NeoBank Dashboard">
+            <div class="work-overlay">
+                <span class="work-tag">Fintech</span>
+                <h3>NeoBank Prime</h3>
+                <p style="font-size: 0.9rem;">Digital banking reimagined for Gen Z investors</p>
+                <p class="work-lead">Lead: Elena · Design + Engineering</p>
+            </div>
+        </a>
+        <a href="case-study.html" class="work-card hover-target reveal" data-category="ai">
+            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80" alt="AI Platform">
+            <div class="work-overlay">
+                <span class="work-tag">AI / ML</span>
+                <h3>Cortex AI</h3>
+                <p style="font-size: 0.9rem;">Generative interface for enterprise intelligence</p>
+                <p class="work-lead">Lead: Marcus · Engineering</p>
+            </div>
+        </a>
+        <a href="case-study.html" class="work-card hover-target reveal" data-category="ecommerce">
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80" alt="Fashion E-commerce">
+            <div class="work-overlay">
+                <span class="work-tag">E-Commerce</span>
+                <h3>Velour</h3>
+                <p style="font-size: 0.9rem;">Luxury fashion platform with AR try-on</p>
+                <p class="work-lead">Lead: Sarah · Growth + Design</p>
+            </div>
+        </a>
+        <a href="case-study.html" class="work-card hover-target reveal" data-category="fintech">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Trading Dashboard">
+            <div class="work-overlay">
+                <span class="work-tag">Fintech</span>
+                <h3>Alpha Trade</h3>
+                <p style="font-size: 0.9rem;">Real-time trading analytics dashboard</p>
+                <p class="work-lead">Lead: Marcus · Full Stack</p>
+            </div>
+        </a>
+        <a href="case-study.html" class="work-card hover-target reveal" data-category="saas">
+            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80" alt="SaaS Platform">
+            <div class="work-overlay">
+                <span class="work-tag">SaaS</span>
+                <h3>FlowStack</h3>
+                <p style="font-size: 0.9rem;">Project management tool for remote agencies</p>
+                <p class="work-lead">Lead: Elena · Design System</p>
+            </div>
+        </a>
+        <a href="case-study.html" class="work-card hover-target reveal" data-category="healthcare">
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80" alt="Healthcare App">
+            <div class="work-overlay">
+                <span class="work-tag">Healthcare</span>
+                <h3>MedSync</h3>
+                <p style="font-size: 0.9rem;">Patient-first telemedicine platform</p>
+                <p class="work-lead">Lead: Sarah · Growth + Strategy</p>
+            </div>
+        </a>
+    </section>
+
+    <footer class="footer" style="margin-top: var(--spacing-xl);">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="reveal">
+                    <div class="footer-logo">
+                        <div class="logo-icon"></div> MIDNIGHT
+                    </div>
+                    <p style="font-size: 0.9rem;">Three minds forging the digital avant-garde.</p>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Studio</h4>
+                    <ul>
+                        <li><a href="studio.html">Our Story</a></li>
+                        <li><a href="minds.html">The Minds</a></li>
+                        <li><a href="work.html">Work</a></li>
+                        <li><a href="insights.html">Insights</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html">Design</a></li>
+                        <li><a href="services.html">Engineering</a></li>
+                        <li><a href="services.html">Growth</a></li>
+                        <li><a href="lab.html">The Lab</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Twitter / X</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Dribbble</a></li>
+                        <li><a href="mailto:hello@midnight.studio">Email Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom"><span>© 2026 Midnight Indigo.</span><span>Crafted with obsession.</span></div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.filter-btn');
+            const items = document.querySelectorAll('.work-card');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.getAttribute('data-filter');
+                    items.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.style.display = 'block';
+                            item.animate([{ opacity: 0, transform: 'scale(0.95)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 400, fill: 'forwards' });
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Minds | Midnight Indigo</title>
+    <meta name="description" content="Meet the three minds behind Midnight Indigo.">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(11, 14, 20, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-primary);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 0.6rem 1.5rem !important;
+            font-size: 0.8rem !important;
+            background: var(--accent-primary) !important;
+            color: #fff !important;
+            border-radius: 50px;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            padding: 4px 12px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+
+        /* Page Hero */
+        .minds-hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: var(--header-height);
+            background: radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 60%);
+            padding: var(--spacing-xl) 0;
+        }
+
+        /* Member Cards */
+        .minds-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg) 0;
+        }
+
+        .mind-card {
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.4s;
+        }
+
+        .mind-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .mind-avatar {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            transition: transform 0.6s;
+        }
+
+        .mind-card:hover .mind-avatar {
+            transform: scale(1.05);
+        }
+
+        .mind-info {
+            padding: 2rem;
+        }
+
+        .mind-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .mind-role {
+            color: var(--accent-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .mind-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 1rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-online {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .status-busy {
+            background: #EF4444;
+            box-shadow: 0 0 8px #EF4444;
+        }
+
+        .status-oatmeal {
+            background: #F59E0B;
+            box-shadow: 0 0 8px #F59E0B;
+        }
+
+        .mind-bio {
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mind-quote {
+            font-style: italic;
+            font-size: 0.85rem;
+            color: var(--accent-secondary);
+            padding-left: 1rem;
+            border-left: 2px solid var(--accent-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Skills */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-tag {
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* Featured Projects */
+        .member-projects {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .member-project-thumb {
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            width: 100%;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .member-project-thumb:hover {
+            opacity: 1;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 20px;
+            padding: 3rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo .logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.4;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .footer-bottom {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                inset: 0;
+                background: var(--bg-primary);
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .minds-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="logo hover-target">
+            <div class="logo-icon"></div> MIDNIGHT
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="studio.html" class="hover-target">Studio</a>
+            <a href="minds.html" class="active hover-target">Minds</a>
+            <a href="work.html" class="hover-target">Work</a>
+            <a href="services.html" class="hover-target">Services</a>
+            <a href="insights.html" class="hover-target">Insights</a>
+            <a href="lab.html" class="hover-target">The Lab</a>
+            <a href="client-portal.html" class="hover-target">Portal</a>
+            <a href="contact.html" class="nav-cta hover-target">Let's Talk</a>
+        </div>
+        <div class="hamburger hover-target" onclick="document.getElementById('navLinks').classList.toggle('active')">
+            <span></span><span></span><span></span></div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <header class="minds-hero">
+        <div class="container">
+            <span class="section-label reveal">The Team</span>
+            <h1 class="reveal" style="font-size: clamp(3rem, 6vw, 5rem);">Meet The <span
+                    class="text-gradient">Minds</span></h1>
+            <p class="reveal" style="max-width: 600px; margin: 1rem auto 0; font-size: 1.2rem;">Three radically
+                different humans. United by craft, driven by code, bonded by obsession.</p>
+        </div>
+    </header>
+
+    <!-- ===== TEAM MEMBERS ===== -->
+    <section class="container minds-grid">
+        <!-- Elena -->
+        <div class="glass-card mind-card hover-target reveal" onclick="openModal('elena')">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80" alt="Elena"
+                class="mind-avatar">
+            <div class="mind-info">
+                <div class="mind-name">Elena Vasquez</div>
+                <div class="mind-role">Head of Design & Strategy</div>
+                <div class="mind-status">
+                    <span class="status-dot status-online"></span>
+                    Available — only accepts meetings with coffee
+                </div>
+                <p class="mind-bio">Former design lead at Spotify. 8+ years crafting interfaces that users love and
+                    investors fund.</p>
+                <p class="mind-quote">"Design without strategy is art. Strategy without design is noise."</p>
+                <div class="skills-list">
+                    <span class="skill-tag">UI/UX</span>
+                    <span class="skill-tag">Figma</span>
+                    <span class="skill-tag">Brand</span>
+                    <span class="skill-tag">Motion</span>
+                    <span class="skill-tag">Research</span>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="hover-target">𝕏</a>
+                    <a href="#" class="hover-target">in</a>
+                    <a href="#" class="hover-target">dr</a>
+                </div>
+                <div class="member-projects">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200&q=80" alt="Project 1"
+                        class="member-project-thumb">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&q=80" alt="Project 2"
+                        class="member-project-thumb">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&q=80" alt="Project 3"
+                        class="member-project-thumb">
+                </div>
+            </div>
+        </div>
+
+        <!-- Marcus -->
+        <div class="glass-card mind-card hover-target reveal" onclick="openModal('marcus')">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="Marcus"
+                class="mind-avatar">
+            <div class="mind-info">
+                <div class="mind-name">Marcus Chen</div>
+                <div class="mind-role">Lead Engineering</div>
+                <div class="mind-status">
+                    <span class="status-dot status-busy"></span>
+                    Compiling... please hold
+                </div>
+                <p class="mind-bio">Ex-Google engineer. Writes code that scales to millions. Self-taught in 5 languages
+                    by 16.</p>
+                <p class="mind-quote">"Good code is its own documentation. Great code needs none."</p>
+                <div class="skills-list">
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">WebGL</span>
+                    <span class="skill-tag">Rust</span>
+                    <span class="skill-tag">AWS</span>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="hover-target">𝕏</a>
+                    <a href="#" class="hover-target">gh</a>
+                    <a href="#" class="hover-target">in</a>
+                </div>
+                <div class="member-projects">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=200&q=80" alt="Project 1"
+                        class="member-project-thumb">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&q=80" alt="Project 2"
+                        class="member-project-thumb">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200&q=80" alt="Project 3"
+                        class="member-project-thumb">
+                </div>
+            </div>
+        </div>
+
+        <!-- Sarah -->
+        <div class="glass-card mind-card hover-target reveal" onclick="openModal('sarah')">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80" alt="Sarah"
+                class="mind-avatar">
+            <div class="mind-info">
+                <div class="mind-name">Sarah Kim</div>
+                <div class="mind-role">Growth & Operations</div>
+                <div class="mind-status">
+                    <span class="status-dot status-oatmeal"></span>
+                    Oatmeal Break ☕
+                </div>
+                <p class="mind-bio">Product strategist who turned 3 startups into category leaders. Obsessed with user
+                    funnels.</p>
+                <p class="mind-quote">"The best product in the world is invisible if nobody finds it."</p>
+                <div class="skills-list">
+                    <span class="skill-tag">SEO</span>
+                    <span class="skill-tag">Analytics</span>
+                    <span class="skill-tag">CRO</span>
+                    <span class="skill-tag">Growth</span>
+                    <span class="skill-tag">PM</span>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="hover-target">𝕏</a>
+                    <a href="#" class="hover-target">in</a>
+                    <a href="#" class="hover-target">md</a>
+                </div>
+                <div class="member-projects">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&q=80" alt="Project 1"
+                        class="member-project-thumb">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=200&q=80" alt="Project 2"
+                        class="member-project-thumb">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200&q=80" alt="Project 3"
+                        class="member-project-thumb">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MODAL (Expandable Biography) ===== -->
+    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+        <div class="glass-card modal-content" id="modalContent" style="position: relative;">
+            <div class="modal-close hover-target" onclick="closeModal()">✕</div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="reveal">
+                    <div class="footer-logo">
+                        <div class="logo-icon"></div> MIDNIGHT
+                    </div>
+                    <p style="font-size: 0.9rem;">Three minds forging the digital avant-garde.</p>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Studio</h4>
+                    <ul>
+                        <li><a href="studio.html" class="hover-target">Our Story</a></li>
+                        <li><a href="minds.html" class="hover-target">The Minds</a></li>
+                        <li><a href="work.html" class="hover-target">Work</a></li>
+                        <li><a href="insights.html" class="hover-target">Insights</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html" class="hover-target">Design</a></li>
+                        <li><a href="services.html" class="hover-target">Engineering</a></li>
+                        <li><a href="services.html" class="hover-target">Growth</a></li>
+                        <li><a href="lab.html" class="hover-target">The Lab</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#" class="hover-target">Twitter / X</a></li>
+                        <li><a href="#" class="hover-target">LinkedIn</a></li>
+                        <li><a href="#" class="hover-target">Dribbble</a></li>
+                        <li><a href="mailto:hello@midnight.studio" class="hover-target">Email Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 Midnight Indigo. All rights reserved.</span>
+                <span>Crafted with obsession.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        const bios = {
+            elena: {
+                name: 'Elena Vasquez',
+                role: 'Head of Design & Strategy',
+                img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80',
+                full: `Elena started designing at 14, creating custom MySpace layouts (yes, really). She studied Visual Communications in Barcelona, interned at IDEO, then spent 4 years at Spotify, where she led the design of Wrapped 2021. Her obsession with spacing and typography borders on clinical. She believes every interface is a conversation — and most conversations could use better punctuation.<br><br>When not designing, she's training for ultramarathons or photographing brutalist architecture. She has a tattoo of a golden ratio spiral. She will not tell you where.`
+            },
+            marcus: {
+                name: 'Marcus Chen',
+                role: 'Lead Engineering',
+                img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80',
+                full: `Marcus wrote his first program at 11 — a calculator that insulted you for getting answers wrong. He skipped college to join a YC startup, got acqui-hired by Google at 22, and spent 3 years on Chrome's V8 engine. He left because he "wanted to build products, not platforms."<br><br>He's shipped code in 12 programming languages and contributed to 3 open-source projects with 10,000+ GitHub stars. His terminal theme is custom. His mechanical keyboard is custom. His espresso machine is probably custom too. He believes in writing code for the developer who'll maintain it at 3 AM.`
+            },
+            sarah: {
+                name: 'Sarah Kim',
+                role: 'Growth & Operations',
+                img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80',
+                full: `Sarah was a management consultant at McKinsey before she realized she'd rather build companies than advise them. She joined a pre-seed startup, grew it from 0 to 500K users in 18 months, then did it again. Twice.<br><br>She obsesses over funnels, retention curves, and finding the one metric that matters. She reads academic papers on behavioral economics for fun. She built her own personal CRM in Notion (it has 47 views). She believes the best growth strategy is a product so good that people can't shut up about it.`
+            }
+        };
+
+        function openModal(key) {
+            const data = bios[key];
+            document.getElementById('modalBody').innerHTML = `
+                <img src="${data.img}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 1.5rem;">
+                <h2>${data.name}</h2>
+                <p style="color: var(--accent-secondary); margin-bottom: 1.5rem;">${data.role}</p>
+                <p style="line-height: 1.8;">${data.full}</p>
+            `;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>
